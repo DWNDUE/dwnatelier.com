@@ -261,3 +261,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+/* HEADER OPEN/CLOSE VIA LOGO */
+const headerContent = document.getElementById("header-content");
+const logoTrigger = document.getElementById("logo-trigger");
+
+logoTrigger.addEventListener("click", () => {
+  headerContent.classList.toggle("open");
+});
+
+/* MICRO-GLITCH RANDOM SUL LOGO */
+setInterval(() => {
+  const logoVid = document.querySelector(".logo video");
+  logoVid.classList.add("glitch");
+  setTimeout(() => logoVid.classList.remove("glitch"), 200);
+}, 3500);

@@ -16,26 +16,28 @@
   </head>
 
   <body>
-    <!-- HEADER -->
-    <header id="site-header">
-      <div class="header-content">
-        <div class="logo">
-          <video autoplay loop muted playsinline>
-            <source src="assets/logo.mp4" type="video/mp4" />
-          </video>
-        </div>
 
-        <nav>
-          <ul>
-            <li>✦ HOME</li>
-            <li>▣ WORKS</li>
-            <li>❧ ARCHIVE</li>
-            <li>⌗ SHOP</li>
-            <li>✜ D*IO</li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+ <header id="site-header">
+  <div class="header-content" id="header-content">
+    <div class="logo" id="logo-trigger">
+      <video autoplay loop muted playsinline>
+        <source src="assets/logo.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <nav id="main-nav">
+      <ul>
+        <li>✦ HOME</li>
+        <li>▣ WORKS</li>
+        <li>▥ ARCHIVE</li>
+        <li>⌗ SHOP</li>
+        <li>✜ D*IO</li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
 
     <!-- HERO -->
     <section id="hero">
@@ -106,45 +108,51 @@
         <div id="works-trigger"></div>
       </section>
 
-      <section id="identity-panel" class="identity-panel">
-        <div class="identity-block parallax-item" data-speed="0.15">
-          <div class="glyph">✦</div>
-          <h2>DWN.ATELIER</h2>
-          <p>hybrid visual practice</p>
-          <p>painting → analog photography → motion → generative systems</p>
-        </div>
+<section id="identity" class="identity-panel">
+  <div class="identity-bg"></div>
 
-        <div class="modules-grid">
-          <div class="module parallax-item" data-speed="0.25">
-            <span>✹</span> motion & compositing
-          </div>
-          <div class="module parallax-item" data-speed="0.30">
-            <span>⌁</span> generative systems
-          </div>
-          <div class="module parallax-item" data-speed="0.20">
-            <span>◼</span> 3D materials
-          </div>
-          <div class="module parallax-item" data-speed="0.35">
-            <span>◎</span> analog photography
-          </div>
-          <div class="module parallax-item" data-speed="0.28">
-            <span>✜</span> painting archive
-          </div>
-          <div class="module parallax-item" data-speed="0.22">
-            <span>✦</span> hybrid visuals
-          </div>
-        </div>
+  <div class="identity-inner">
 
-        <div class="process-line parallax-item" data-speed="0.18">
-          <span>⌁ scan</span>
-          <span>◎ capture</span>
-          <span>✹ decode</span>
-          <span>◼ build</span>
-          <span>✜ refine</span>
-          <span>✦ deploy</span>
-        </div>
-      </section>
-    </main>
+    <!-- LOGO PULSANTE -->
+    <div class="identity-logo">
+      <img src="assets/logo.svg" alt="DWN.ATELIER logo">
+    </div>
+
+    <!-- MANIFESTO BREVE -->
+    <div class="identity-manifesto">
+      <h2>DWN.ATELIER</h2>
+      <p class="keywords">street — digital — analog</p>
+      <p class="statement">
+        hybrid visual practice across painting, analog capture, motion & generative systems.
+      </p>
+    </div>
+
+    <!-- LINK ALLE ALTRE PAGINE -->
+    <div class="identity-links">
+      <a href="/about">about</a>
+      <a href="/works">works</a>
+      <a href="/contact">contact</a>
+    </div>
+
+  </div>
+</section>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<section class="dwn-3d-section">
+  <model-viewer 
+    src="assets/DWNlogo.glb"
+    camera-controls
+    auto-rotate
+    disable-zoom="false"
+    class="dwn-3d-viewer"
+  ></model-viewer>
+
+  <div class="dwn-glitch"></div>
+</section>
+
+
+
 
     <!-- VIDEO PRIMA DEL FOOTER -->
     <div class="footer-video-wrapper">
