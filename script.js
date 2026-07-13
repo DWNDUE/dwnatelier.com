@@ -54,19 +54,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 7000);
 });
 
+
 /* HEADER MOSTRA/NASCONDI IN BASE ALLO SCROLL */
 let lastScroll = 0;
 
 window.addEventListener("scroll", () => {
   const current = window.scrollY;
   const header = document.getElementById("site-header");
+  const headerContent = document.getElementById("header-content");
 
-  // se scendi → nascondi
+  // SE IL MENU È APERTO → NON NASCONDERE MAI L'HEADER
+  if (headerContent.classList.contains("open")) {
+    header.classList.remove("hide");
+    lastScroll = current;
+    return;
+  }
+
+  // SE IL MENU È CHIUSO → COMPORTAMENTO NORMALE
   if (current > lastScroll && current > 80) {
     header.classList.add("hide");
-  }
-  // se sali → mostra
-  else {
+  } else {
     header.classList.remove("hide");
   }
 
