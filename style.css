@@ -64,7 +64,17 @@ main {
   }
 }
 
-/* HEADER BASE */
+/* Nascondi cursore custom su dispositivi touch e su tablet/phone */
+@media (hover: none), (pointer: coarse), (max-width: 1024px) {
+  .custom-cursor,
+  .cursor-trail {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+/* ---------- HEADER: layout e comportamento (override finale) ---------- */
 #site-header {
   position: fixed;
   top: 0;
@@ -73,110 +83,73 @@ main {
   padding: 18px 40px;
   z-index: 999;
   background: transparent;
-  transition:
-    background 0.3s ease,
-    backdrop-filter 0.3s ease,
-    transform 0.3s ease;
+  transition: background 0.28s ease, backdrop-filter 0.28s ease, transform 0.28s ease, padding 0.28s ease;
 }
 
-/* HEADER SCROLL */
-#site-header.scrolled {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid #000;
-}
+/* hide on scroll */
+#site-header.hide { transform: translateY(-100%); }
 
-/* HEADER NASCONDI DURANTE SCROLL */
-#site-header.hide {
-  transform: translateY(-100%);
-}
-
-/* HEADER CONTENT — CHIUSO (logo a destra) */
+/* default: logo CENTRATO su desktop */
 .header-content {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* LOGO A DESTRA */
+  justify-content: center; /* LOGO AL CENTRO QUANDO CHIUSO */
   gap: 24px;
-  transition: justify-content 0.3s ease;
+  max-width: 1400px;
+  margin: 0 auto;
+  transition: justify-content 0.28s ease, gap 0.28s ease, padding 0.28s ease;
 }
 
-/* LOGO */
-.logo video {
-  width: 60px;
-  height: auto;
-  cursor: pointer;
-
-  /* INVITO A CLICCARE */
-  animation: logoPulse 2.4s ease-in-out infinite;
-}
-
-@keyframes logoPulse {
-  0% { transform: scale(1); filter: none; }
-  50% { transform: scale(1.06); filter: drop-shadow(0 0 4px rgba(0,0,0,0.25)); }
-  100% { transform: scale(1); filter: none; }
-}
-
-/* MICRO-GLITCH */
-.logo video.glitch {
-  animation: logoGlitch 0.25s steps(2);
-}
-
-@keyframes logoGlitch {
-  0% { transform: translate(0,0); }
-  50% { transform: translate(2px,-2px); }
-  100% { transform: translate(0,0); }
-}
-
-/* NAV CHIUSO DI DEFAULT */
+/* nav nascosto di default */
 #main-nav {
   opacity: 0;
-  transform: translateX(60px); /* MENU SPINTO A DESTRA */
+  transform: translateX(60px);
   pointer-events: none;
-  transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
+#main-nav ul { list-style: none; display:flex; gap:28px; font-family:"Silkscreen", monospace; font-size:14px; }
 
-#main-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 28px;
-  font-family: "Silkscreen", monospace;
-  font-size: 14px;
+/* quando apri: logo a sinistra e nav visibile */
+.header-content.open { justify-content: flex-start; }
+.header-content.open #main-nav { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+/* logo */
+.logo, #logo-trigger {
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
 }
+.logo video, .logo img { width:60px; height:auto; display:block; transition: transform .28s ease, filter .28s ease; }
 
-/* HEADER APERTO — LOGO A SINISTRA + MENU CHE ENTRA */
-.header-content.open {
-  justify-content: flex-start; /* LOGO VA A SINISTRA */
-}
+/* micro hint */
+.logo video { animation: logoPulse 2.4s ease-in-out infinite; }
+@keyframes logoPulse { 0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)} }
+.logo video.glitch { animation: logoGlitch .25s steps(2); }
+@keyframes logoGlitch { 0%{transform:translate(0,0)}50%{transform:translate(2px,-2px)}100%{transform:translate(0,0)} }
 
-.header-content.open #main-nav {
-  opacity: 1;
-  transform: translateX(0); /* MENU ENTRA DA DESTRA */
+/* forzo il comportamento (override regole precedenti) */
+#site-header .header-content { justify-content: center !important; }
+#site-header .header-content.open { justify-content: flex-start !important; }
+
+/* Mantieni logo cliccabile anche quando header è nascosto:
+   non cambiamo il flow del logo, ma aggiungiamo un piccolo "hit area" invisibile
+   che rimane attiva quando header ha .hide (non altera layout). */
+#site-header.hide .logo,
+#site-header.hide #logo-trigger {
   pointer-events: auto;
+  z-index: 10001;
 }
 
-/* TABLET + MOBILE: LOGO SOPRA, MENU SU UNA RIGA */
+/* Nascondi cursore custom su touch / tablet */
+@media (hover: none), (pointer: coarse), (max-width: 1024px) {
+  .custom-cursor, .cursor-trail { display: none !important; visibility: hidden !important; pointer-events: none !important; }
+}
+
+/* Responsive: header su mobile */
 @media (max-width: 1024px) {
-  .header-content {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-  }
-
-  .header-content.open {
-    justify-content: center;
-  }
-
-  #main-nav ul {
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 18px;
-  }
+  .header-content { flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 12px 20px; }
+  .header-content.open { justify-content: center; }
+  #main-nav ul { flex-direction: row !important; flex-wrap: wrap; justify-content: center; gap: 18px; }
+  .logo video, .logo img { width:56px; }
 }
-
 
 
 /* HERO */
