@@ -16,8 +16,8 @@
     const terminal = $("#terminal-log");
     const masonry = $(".masonry");
 
-    /* ---------- TYPEWRITER ---------- */
-    if (typeTarget && header) {
+    /* ---------- TYPEWRITER (PULITO: NON TOCCA PIÙ L'HEADER) ---------- */
+    if (typeTarget) {
       const text = "I'M NOT A DESIGNER\nI'M AN IMPULSIVE CREATIVE";
       let i = 0;
       let typing = false;
@@ -25,7 +25,6 @@
       function type() {
         if (!typing) {
           typing = true;
-          header.classList.add("header-white");
         }
 
         if (i < text.length) {
@@ -38,18 +37,11 @@
             typeTarget.innerHTML = "";
             i = 0;
             typing = false;
-            header.classList.remove("header-white");
             setTimeout(type, 800);
           }, 2000);
         }
       }
       type();
-
-      const observer = new MutationObserver(() => {
-        const hasText = typeTarget.innerText.trim().length > 0;
-        header.classList.toggle("header-white", hasText);
-      });
-      observer.observe(typeTarget, { childList: true, subtree: true });
     }
 
     /* ---------- CURSORE PERSONALIZZATO ---------- */
@@ -65,7 +57,6 @@
 
       document.addEventListener("mousemove", (e) => {
         cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-
         const trail = document.createElement("div");
         trail.className = "cursor-trail";
         trail.style.left = `${e.clientX}px`;
@@ -234,72 +225,48 @@
       }, { passive: true });
     })();
 
-   /* ---------- HEADER: OPEN/CLOSE + COLOR LOGIC ---------- */
-if (header && headerContent && logoTrigger) {
-  let lastScroll = window.scrollY || 0;
+    /* ---------- HEADER: LOGICA PULITA ---------- */
+    if (header && headerContent && logoTrigger) {
+      let lastScroll = window.scrollY || 0;
 
-  function updateHeaderState() {
-    const current = window.scrollY || 0;
-    const isOpen = headerContent.classList.contains("open");
-    const isTyping = header.classList.contains("header-white");
+      function updateHeaderState() {
+        const current = window.scrollY || 0;
+        const isOpen = headerContent.classList.contains("open");
 
-    /* -------------------------
-       COLORE HEADER
-       ------------------------- */
+        // 1. GESTIONE COLORE (.scrolled)
+        // Se menu aperto O scrollato, allora bianco. Altrimenti trasparente.
+        if (isOpen || current > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
 
-    // MENU APERTO → header bianco sempre
-    if (isOpen) {
-      header.classList.add("scrolled");
-    }
-    // MENU CHIUSO → header trasparente se sei in alto e non sta scrivendo
-    else if (current < 50 && !isTyping) {
-      header.classList.remove("scrolled");
-    }
-    // MENU CHIUSO → scroll > 50 → header bianco
-    else {
-      header.classList.add("scrolled");
-    }
+        // 2. GESTIONE NASCONDI (.hide)
+        // Se menu aperto, non nascondere mai.
+        if (isOpen) {
+          header.classList.remove("hide");
+        } else {
+          // Se scrolliamo verso il basso (e non siamo all'inizio), nascondi
+          if (current > lastScroll && current > 80) {
+            header.classList.add("hide");
+          } else {
+            // Se scrolliamo verso l'alto, mostra
+            header.classList.remove("hide");
+          }
+        }
 
-    /* -------------------------
-       HIDE / SHOW HEADER
-       ------------------------- */
-
-    // se il menu è aperto → header sempre visibile
-    if (isOpen) {
-      header.classList.remove("hide");
-      lastScroll = current;
-      return;
-    }
-
-    // SCROLL DOWN → nascondi
-    if (current > lastScroll && current > 80) {
-      header.classList.add("hide");
-    }
-
-    // SCROLL UP → mostra SEMPRE
-    else {
-      header.classList.remove("hide");
-
-      // se sei tornato in alto → header trasparente
-      if (current < 50 && !isTyping) {
-        header.classList.remove("scrolled");
+        lastScroll = current;
       }
+
+      logoTrigger.addEventListener("click", () => {
+        headerContent.classList.toggle("open");
+        updateHeaderState();
+      });
+
+      window.addEventListener("scroll", () => {
+        updateHeaderState();
+      }, { passive: true });
     }
-
-    lastScroll = current;
-  }
-
-  /* CLICK LOGO */
-  logoTrigger.addEventListener("click", () => {
-    headerContent.classList.toggle("open");
-    updateHeaderState();
-  });
-
-  /* SCROLL */
-  window.addEventListener("scroll", () => {
-    updateHeaderState();
-  }, { passive: true });
-}
 
     /* ---------- MICRO GLITCH ---------- */
     (function initMicroGlitch() {

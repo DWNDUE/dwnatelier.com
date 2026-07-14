@@ -1,17 +1,24 @@
-/* FONT IMPORT */
+/* ===========================
+   FONT IMPORT
+   =========================== */
 @import url("https://fonts.googleapis.com/css2?family=DotGothic16&family=Silkscreen:wght@400;700&family=Handjet:wght@100..900&display=swap");
 
-/* RESET */
+/* ===========================
+   RESET
+   =========================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* BASE */
+/* ===========================
+   BASE
+   =========================== */
 html,
 body {
   height: auto;
+  scroll-behavior: smooth; /* Sostituisce lo scroll-snap per una navigazione più fluida e compatibile */
 }
 
 body {
@@ -29,7 +36,9 @@ main {
   flex: 1;
 }
 
-/* CURSORE PERSONALIZZATO ✦ */
+/* ===========================
+   CURSORE PERSONALIZZATO ✦
+   =========================== */
 .custom-cursor {
   position: fixed;
   top: 0;
@@ -74,33 +83,43 @@ main {
   }
 }
 
-//* ===========================
+/* ===========================
    HEADER BASE
    =========================== */
-
 #site-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   padding: 18px 40px;
-  z-index: 999;
+  z-index: 9999; /* Sopra a tutto */
+  
+  /* STATO INIZIALE TOTALMENTE TRASPARENTE */
   background: transparent;
+  border-bottom: 1px solid transparent;
+  
   transition:
     background 0.28s ease,
     backdrop-filter 0.28s ease,
     border-bottom 0.28s ease,
-    transform 0.28s ease;
+    transform 0.28s ease,
+    color 0.28s ease;
 }
 
-/* HEADER BIANCO SOLO QUANDO SCROLLATO */
-#site-header.scrolled {
-  background: #ffffff;
+/* HEADER BIANCO: APPLICATO SOLO SE SCROLLATO O MENU APERTO */
+#site-header.scrolled,
+#site-header.menu-open {
+  background: #ffffff !important;
   backdrop-filter: blur(6px);
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid #000 !important;
 }
 
-/* HEADER NASCONDI DURANTE SCROLL */
+/* Blocca l'header visibile se l'utente ha il menu aperto */
+#site-header.menu-open {
+  transform: translateY(0) !important;
+}
+
+/* HEADER NASCONDI (Quando scivola via verso l'alto) */
 #site-header.hide {
   transform: translateY(-100%);
 }
@@ -108,36 +127,29 @@ main {
 /* ===========================
    HEADER CONTENT — DESKTOP
    =========================== */
-
 .header-content {
   display: flex;
   align-items: center;
-  justify-content: center; /* logo centrato quando chiuso */
-  gap: 24px;
+  justify-content: center; /* Logo SEMPRE centrato */
   max-width: 1400px;
   margin: 0 auto;
-  transition: justify-content 0.28s ease;
-}
-
-/* MENU APERTO → LOGO A SINISTRA + MENU A DESTRA */
-.header-content.open {
-  justify-content: space-between;
+  position: relative; /* Necessario per il posizionamento del menu */
+  transition: flex-direction 0.28s ease;
 }
 
 /* ===========================
-   NAV
+   NAV & TEXTS
    =========================== */
-
 #main-nav {
+  position: absolute; /* Il menu sta a destra senza spingere il logo */
+  right: 40px; 
   opacity: 0;
-  transform: translateX(60px);
   pointer-events: none;
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .header-content.open #main-nav {
   opacity: 1;
-  transform: translateX(0);
   pointer-events: auto;
 }
 
@@ -145,17 +157,42 @@ main {
   display: flex;
   flex-direction: row;
   gap: 24px;
+  list-style: none;
+}
+
+/* Colore testi di base (Trasparente = Bianco) */
+#main-nav ul li,
+#main-nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-family: "Silkscreen", monospace;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s ease, color 0.28s ease;
+}
+
+/* Colore testi quando l'header è bianco (Scrollato o Aperto) */
+#site-header.scrolled #main-nav ul li,
+#site-header.scrolled #main-nav ul li a,
+#site-header.menu-open #main-nav ul li,
+#site-header.menu-open #main-nav ul li a {
+  color: #000 !important;
+}
+
+#main-nav ul li:hover,
+#main-nav ul li a:hover {
+  opacity: 0.5;
 }
 
 /* ===========================
    LOGO
    =========================== */
-
 .logo {
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 2; /* Sopra il menu */
 }
 
 .logo video {
@@ -165,43 +202,50 @@ main {
   transition: transform .28s ease, filter .28s ease;
 }
 
+.logo video.glitch {
+  filter: hue-rotate(90deg) invert(20%) contrast(150%) drop-shadow(2px 0 red);
+  transform: translate(3px, -2px) skewX(2deg);
+}
+
 /* ===========================
-   RESPONSIVE — TABLET + MOBILE
+   RESPONSIVE (Tablet & Mobile)
    =========================== */
-
 @media (max-width: 1024px) {
+  #site-header {
+    padding: 15px 20px;
+  }
 
-  /* Logo sopra, menu sotto */
+  /* Reset del posizionamento assoluto per il mobile */
+  #main-nav {
+    position: static;
+    transform: none !important;
+  }
+
   .header-content {
     flex-direction: column;
-    align-items: center;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  #main-nav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 16px;
   }
-
-  .header-content.open {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* Menu sempre in riga */
-  #main-nav ul {
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 18px;
-  }
 }
 
-
-/* HERO */
+/* ===========================
+   HERO
+   =========================== */
 #hero {
   position: relative;
   width: 100%;
-  min-height: 100vh; /* FIX */
+  min-height: 100vh;
   height: auto;
   overflow: hidden;
 }
+
 /* HERO VIDEO */
 .header-video {
   position: absolute;
@@ -210,8 +254,7 @@ main {
   max-width: 100%;
   height: auto;
   object-fit: contain;
-  opacity: ;
-  z-index: ;
+  opacity: 1;
   display: block;
 }
 
@@ -236,37 +279,6 @@ main {
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
   animation: glitchPulse 3s infinite;
 }
-
-/* HEADER BIANCO quando attivo */
-#site-header.header-white {
-  background: #ffffff !important;
-  color: #000 !important;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  backdrop-filter: none;
-}
-
-/* Assicura che link / nav / logo si adattino al tema chiaro */
-#site-header.header-white a,
-#site-header.header-white nav,
-#site-header.header-white #main-nav ul li {
-  color: #000 !important;
-}
-
-#site-header.header-white .logo video,
-#site-header.header-white .logo img {
-  filter: none !important;
-}
-
-/* Se usi icone bianche nel footer/header, invertile quando header è bianco */
-#site-header.header-white .icon-invert {
-  filter: invert(0) !important;
-}
-
-/* Transizione morbida */
-#site-header {
-  transition: background 220ms ease, color 220ms ease, border-bottom 220ms ease;
-}
-
 
 /* CURSORE LAMPEGGIANTE */
 .header-overlay h1::after {
@@ -329,25 +341,11 @@ main {
   }
 }
 
-body.snap {
-  scroll-snap-type: y mandatory;
-}
-
-body.snap #hero,
-body.snap #works,
-body.snap {
-  scroll-snap-align: start;
-}
-
-html,
-body {
-  scroll-snap-type: y mandatory;
-}
-
-/* WORKS SECTION */
+/* ===========================
+   WORKS SECTION
+   =========================== */
 
 /* TERMINALE CENTRATO */
-
 #terminal-log {
   position: absolute;
   top: 50%;
@@ -381,7 +379,7 @@ body {
   display: none !important;
 }
 
-/* cursore */
+/* cursore terminale */
 .cursor {
   display: inline-block;
   width: 6px;
@@ -440,7 +438,7 @@ body {
   clear: both;
 }
 
-/* CARD BASE — versione corretta */
+/* CARD BASE */
 .work-card {
   break-inside: avoid;
   margin-bottom: 10px;
@@ -594,21 +592,7 @@ body {
   transform: translate(0, 0);
 }
 
-/* RESPONSIVE */
-
-/* DESKTOP: 3 COLONNE */
-.masonry {
-  column-count: 3;
-  column-gap: 10px;
-}
-
-/* SOTTO 900PX: 2 COLONNE (FORZATE) */
-@media (max-width: 900px) {
-  .masonry {
-    column-count: 2 !important;
-  }
-}
-
+/* ANIMAZIONE ORGANICA */
 @keyframes organicFloat {
   0% {
     transform: translate(0, 0) rotate(0deg);
@@ -693,19 +677,56 @@ body {
   z-index: 2;
 }
 
+/* ORBITING GLYPHS AROUND LOGO */
+.identity-logo-orbit {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+}
+
 /* LOGO */
-.identity-logo img {
+.identity-logo {
   width: 120px;
   opacity: 0.9;
   animation: identityPulse 4s ease-in-out infinite alternate,
              scanline 0.8s infinite steps(2);
 }
 
+/* ORBIT BASE */
+.orbit {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0.85;
+  animation: orbitSpin 6s linear infinite,
+             orbitGlitch 3.5s infinite steps(1);
+  pointer-events: none;
+}
+
+/* ORBIT POSITIONS */
+.orbit-1 { top: -40px; left: 50%; transform: translateX(-50%); }
+.orbit-2 { bottom: -40px; left: 20%; }
+.orbit-3 { top: 20%; right: -40px; }
+
+/* ORBIT SPIN */
+@keyframes orbitSpin {
+  0%   { transform: rotate(0deg) translateX(40px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); }
+}
+
+/* GLITCH */
+@keyframes orbitGlitch {
+  0%,97%,100% { opacity: 0.85; }
+  98% { opacity: 0.6; transform: translate(-2px,1px); }
+  99% { opacity: 0.8; transform: translate(2px,-1px); }
+}
+
+/* LOGO PULSE */
 @keyframes identityPulse {
   from { transform: scale(1); opacity: 0.85; }
   to   { transform: scale(1.06); opacity: 1; }
 }
 
+/* SCANLINE */
 @keyframes scanline {
   0% { filter: none; }
   50% { filter: drop-shadow(0 0 4px rgba(255,255,255,0.15)); }
@@ -794,6 +815,8 @@ body {
   opacity: 0.75;
   transition: opacity 0.25s ease, transform 0.25s ease;
   animation: skillDrift 6s ease-in-out infinite alternate;
+  position: relative;
+  cursor: pointer;
 }
 
 @keyframes skillDrift {
@@ -807,102 +830,64 @@ body {
   transform: translateY(-3px) scale(1.03);
 }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .identity-skills {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .identity-skills {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .identity-keywords {
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .identity-logo img {
-    width: 80px;
-  }
-}
-
 /* ===========================
-   ORBITING GLYPHS AROUND LOGO
+   SEZIONE 3D FULLSCREEN
    =========================== */
-
-.identity-logo-orbit {
+.dwn-3d-section {
+  width: 100%;
+  height: 100vh;
+  background: #fff;
   position: relative;
-  display: inline-block;
-  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-top: 1px solid #00000000;
+  border-bottom: 0px solid #000;
 }
 
-.identity-logo {
-  width: 120px;
-  animation: identityPulse 4s ease-in-out infinite alternate,
-             scanline 0.8s infinite steps(2);
+/* MODEL VIEWER */
+.dwn-3d-viewer {
+  width: 100%;
+  height: 100%;
+  max-width: 1400px;
+  max-height: 90vh;
 }
 
-/* ORBIT BASE */
-.orbit {
+/* GLITCH OVERLAY 3D */
+.dwn-glitch {
   position: absolute;
-  font-size: 1.4rem;
-  opacity: 0.85;
-  animation: orbitSpin 6s linear infinite,
-             orbitGlitch 3.5s infinite steps(1);
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgb(255, 0, 0) 0px,
+    rgba(0, 149, 255, 1) 2px,
+    transparent 4px
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: glitchMove 0.3s infinite;
+}
+
+@keyframes glitchMove {
+  0% { transform: translate(0,0); }
+  50% { transform: translate(2px,-2px); }
+  100% { transform: translate(0,0); }
+}
+
+/* NOISE OVERLAY 3D */
+.dwn-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("assets/noise.png");
+  opacity: 0.08;
+  mix-blend-mode: multiply;
   pointer-events: none;
 }
 
-/* ORBIT POSITIONS */
-.orbit-1 { top: -40px; left: 50%; transform: translateX(-50%); }
-.orbit-2 { bottom: -40px; left: 20%; }
-.orbit-3 { top: 20%; right: -40px; }
-
-/* ORBIT SPIN */
-@keyframes orbitSpin {
-  0%   { transform: rotate(0deg) translateX(40px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); }
-}
-
-/* GLITCH */
-@keyframes orbitGlitch {
-  0%,97%,100% { opacity: 0.85; }
-  98% { opacity: 0.6; transform: translate(-2px,1px); }
-  99% { opacity: 0.8; transform: translate(2px,-1px); }
-}
-
-/* LOGO PULSE */
-@keyframes identityPulse {
-  from { transform: scale(1); opacity: 0.85; }
-  to   { transform: scale(1.06); opacity: 1; }
-}
-
-/* SCANLINE */
-@keyframes scanline {
-  0% { filter: none; }
-  50% { filter: drop-shadow(0 0 4px rgba(255,255,255,0.15)); }
-  100% { filter: none; }
-}
-
 /* ===========================
-   CYBER SOUND HOVER
+   VIDEO PRIMA DEL FOOTER
    =========================== */
-
-.skill {
-  position: relative;
-  cursor: pointer;
-}
-
-.skill:hover {
-  opacity: 1;
-  transform: translateY(-3px) scale(1.03);
-}
-
-
-/* VIDEO PRIMA DEL FOOTER */
 .footer-video-wrapper {
   width: 100%;
   aspect-ratio: 16/4; /* proporzione larga e bassa */
@@ -919,7 +904,9 @@ body {
   object-fit: cover;
 }
 
-/* FOOTER */
+/* ===========================
+   FOOTER NERO
+   =========================== */
 footer {
   background: #000;
   color: #ffffff;
@@ -981,74 +968,34 @@ footer h2 {
   opacity: 0.6;
 }
 
-/* RESPONSIVE */
+/* ===========================
+   RESPONSIVE GLOBALE
+   =========================== */
 @media (max-width: 900px) {
   .masonry {
-    column-count: 2;
+    column-count: 2 !important;
+  }
+  .identity-skills {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 600px) {
   .masonry {
-    column-count: 1;
+    column-count: 1 !important;
   }
-
   .header-overlay h1 {
     font-size: 1.6rem;
   }
+  .identity-skills {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .identity-keywords {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .identity-logo img {
+    width: 80px;
+  }
 }
-
-/* SEZIONE 3D FULLSCREEN */
-.dwn-3d-section {
-  width: 100%;
-  height: 100vh;
-  background: #fff;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-top: 1px solid #00000000;
-  border-bottom: 0px solid #000;
-}
-
-/* MODEL VIEWER */
-.dwn-3d-viewer {
-  width: 100%;
-  height: 100%;
-  max-width: 1400px;
-  max-height: 90vh;
-}
-
-/* GLITCH OVERLAY */
-.dwn-glitch {
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    rgb(255, 0, 0) 0px,
-    rgba(0, 149, 255, 1) 2px,
-    transparent 4px
-  );
-  mix-blend-mode: screen;
-  pointer-events: none;
-  animation: glitchMove 0.3s infinite;
-}
-
-@keyframes glitchMove {
-  0% { transform: translate(0,0); }
-  50% { transform: translate(2px,-2px); }
-  100% { transform: translate(0,0); }
-}
-
-/* NOISE OVERLAY */
-.dwn-noise {
-  position: absolute;
-  inset: 0;
-  background-image: url("assets/noise.png");
-  opacity: 0.08;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
-
-
